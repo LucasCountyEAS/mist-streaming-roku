@@ -13,7 +13,23 @@ sub GetContent()
     xfer.SetURL("https://api.mistweather.com/api/v1.5/channels")
     rsp = xfer.GetToString()
 
-    print "Response length: "; Len(rsp)
+    ' request descriptions from the public-channels endpoint
+    descXfer = CreateObject("roURLTransfer")
+    descXfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
+    descXfer.InitClientCertificates()
+    descXfer.SetURL("https://api.mistweather.com/api/public-channels")
+    descRsp = descXfer.GetToString()
+
+    ' build a lookup map of channel_id -> description
+    descriptions = {}
+    descJson = ParseJson(descRsp)
+    if descJson <> invalid
+        for each entry in descJson
+            if entry.channel_id <> invalid and entry.channel_description <> invalid
+                descriptions[entry.channel_id] = entry.channel_description
+            end if
+        end for
+    end if
 
     ' parse the flat channel array
     json = ParseJson(rsp)
@@ -22,7 +38,7 @@ sub GetContent()
         for each channel in json
             ' skip channels that are currently offline
             if channel.online = true
-                items.Push(GetItemData(channel))
+                items.Push(GetItemData(channel, descriptions))
             end if
         end for
 
@@ -62,10 +78,18 @@ function SortItemsByTitle(items as Object) as Object
     return items
 end function
 
-function GetItemData(channel as Object) as Object
+function GetItemData(channel as Object, descriptions as Object) as Object
     item = {}
     item.title = channel.title
     item.id = channel.id
+    item.viewership = channel.viewership
+
+    ' pull the description from the lookup map, if available
+    if descriptions[channel.id] <> invalid
+        item.description = descriptions[channel.id]
+    else
+        item.description = ""
+    end if
 
     ' auto-updating thumbnail capture
     item.hdPosterURL = "https://capture.mistweather.com/" + channel.id + ".jpg"

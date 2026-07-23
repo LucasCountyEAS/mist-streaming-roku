@@ -12,21 +12,22 @@
          <Overhang
             id="overhang"
             showOptions="false"
-            showClock="true"
+            showClock="false"
             logoUri="pkg:/images/hd_overhang_logo.png"
             translation="[0,0]"
         />
+        <Font id="loadingFont" uri="pkg:/fonts/arialbi.ttf" size="36" />
         <!-- LoadingIndicator should be visible only in case of waiting for content -->
         <Label
             id="loadingIndicator"
-            text="Loading..."
+            text="Please wait..."
             width="1280"
             height="720"
             translation="[0, 0]"
             horizAlign="center"
             vertAlign="center"
             visible="false"
-            font="font:MediumBoldSystemFont"
+            font="loadingFont"
         />
     </children>
 </component>
