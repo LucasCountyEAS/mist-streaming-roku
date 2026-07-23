@@ -31,6 +31,9 @@ sub GetContent()
         end for
     end if
 
+    ' generate one cache-busting timestamp shared by all thumbnails this refresh
+    timestamp = CreateObject("roDateTime")
+    cacheBuster = timestamp.GetYear().ToStr() + timestamp.GetMonth().ToStr() + timestamp.GetDayOfMonth().ToStr() + timestamp.GetHours().ToStr() + timestamp.GetMinutes().ToStr() + timestamp.GetSeconds().ToStr()
     ' parse the flat channel array
     json = ParseJson(rsp)
     if json <> invalid
@@ -38,7 +41,7 @@ sub GetContent()
         for each channel in json
             ' skip channels that are currently offline
             if channel.online = true
-                items.Push(GetItemData(channel, descriptions))
+                items.Push(GetItemData(channel, descriptions, cacheBuster))
             end if
         end for
 
@@ -78,7 +81,7 @@ function SortItemsByTitle(items as Object) as Object
     return items
 end function
 
-function GetItemData(channel as Object, descriptions as Object) as Object
+function GetItemData(channel as Object, descriptions as Object, cacheBuster as String) as Object
     item = {}
     item.title = channel.title
     item.id = channel.id
@@ -91,8 +94,8 @@ function GetItemData(channel as Object, descriptions as Object) as Object
         item.description = ""
     end if
 
-    ' auto-updating thumbnail capture
-    item.hdPosterURL = "https://capture.mistweather.com/" + channel.id + ".jpg"
+    ' auto-updating thumbnail capture with shared cache-busting timestamp
+    item.hdPosterURL = "https://capture.mistweather.com/" + channel.id + ".jpg?v=" + cacheBuster
 
     ' resolve icon UUID to an actual image URL, falling back if missing
     if channel.icon <> invalid
