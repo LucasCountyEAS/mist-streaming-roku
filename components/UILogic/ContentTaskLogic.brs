@@ -14,4 +14,9 @@ sub OnMainContentLoaded() ' invoked when content is ready to be used
     m.GridScreen.SetFocus(true) ' set focus to GridScreen
     m.loadingIndicator.visible = false ' hide loading indicator because content was retrieved
     m.GridScreen.content = m.contentTask.content ' populate GridScreen with content
+
+    ' if a deep link arrived before content finished loading, handle it now
+    if m.top.launchArgs <> invalid
+        OnLaunchArgsChanged()
+    end if
 end sub

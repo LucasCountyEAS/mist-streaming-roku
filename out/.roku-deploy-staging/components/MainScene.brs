@@ -10,6 +10,38 @@ sub Init()
     InitScreenStack()
     ShowGridScreen()
     RunContentTask() ' retrieving content
+
+    ' handle a deep link that arrived before content finished loading
+    if m.top.launchArgs <> invalid
+        OnLaunchArgsChanged()
+    end if
+end sub
+
+' invoked when the app is launched or already-running and receives deep link parameters
+sub OnLaunchArgsChanged()
+    args = m.top.launchArgs
+    if args = invalid or args.contentId = invalid then return
+
+    if m.GridScreen = invalid or m.GridScreen.content = invalid
+        ' content hasn't loaded yet — try again once it does
+        return
+    end if
+
+    LaunchContentById(args.contentId)
+end sub
+
+' searches the loaded grid content for a channel matching the given id and plays it
+sub LaunchContentById(contentId as String)
+    row = m.GridScreen.content.GetChild(0) ' single row containing all channels
+    if row = invalid then return
+
+    for i = 0 to row.GetChildCount() - 1
+        item = row.GetChild(i)
+        if item.id = contentId
+            ShowVideoScreen(row, i)
+            return
+        end if
+    end for
 end sub
 
 ' The OnKeyEvent() function receives remote control key events

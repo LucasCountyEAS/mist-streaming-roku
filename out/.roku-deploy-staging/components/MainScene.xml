@@ -2,6 +2,9 @@
 <!--********** Copyright 2020 Roku Corp.  All Rights Reserved. **********-->
 
 <component name="MainScene" extends="Scene">
+    <interface>
+        <field id="launchArgs" type="assocarray" onChange="OnLaunchArgsChanged" />
+    </interface>
     <script type="text/brightscript" uri="MainScene.brs" />
     <script type="text/brightscript" uri="UILogic/ScreenStackLogic.brs" />
     <script type="text/brightscript" uri="UILogic/ContentTaskLogic.brs" />
