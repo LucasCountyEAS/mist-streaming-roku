@@ -2,69 +2,89 @@
 
 ' Note that we need to import this file in MainLoaderTask.xml using relative path.
 sub Init()
-    ' set the name of the function in the Task node component to be executed when the state field changes to RUN
-    ' in our case this method executed after the following cmd: m.contentTask.control = "run"(see Init method in MainScene)
     m.top.functionName = "GetContent"
 end sub
 
 sub GetContent()
-    ' request the content feed from the API
+    ' request the channel list from the Mist Streaming API
     xfer = CreateObject("roURLTransfer")
     xfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
-    xfer.SetURL("https://streaming.weatherranch.com/channels.json")
+    xfer.InitClientCertificates()
+    xfer.SetURL("https://api.mistweather.com/api/v1.5/channels")
     rsp = xfer.GetToString()
-    rootChildren = []
-    rows = {}
 
-    ' parse the feed and build a tree of ContentNodes to populate the GridView
+    print "Response length: "; Len(rsp)
+
+    ' parse the flat channel array
     json = ParseJson(rsp)
     if json <> invalid
-        for each category in json
-            value = json.Lookup(category)
-            if Type(value) = "roArray" ' if parsed key value having other objects in it
-                if category <> "series" ' ignore series for this phase
-                    row = {}
-                    row.title = category
-                    row.children = []
-                    for each item in value ' parse items and push them to row
-                        itemData = GetItemData(item)
-                        row.children.Push(itemData)
-                    end for
-                    rootChildren.Push(row)
-                end if
+        items = []
+        for each channel in json
+            ' skip channels that are currently offline
+            if channel.online = true
+                items.Push(GetItemData(channel))
             end if
         end for
+
+        ' sort items alphabetically by title
+        items = SortItemsByTitle(items)
+
+        ' single row containing every channel, sorted alphabetically
+        row = {}
+        row.title = "All Channels"
+        row.children = items
+
+        rootChildren = [row]
+
         ' set up a root ContentNode to represent rowList on the GridScreen
         contentNode = CreateObject("roSGNode", "ContentNode")
         contentNode.Update({
             children: rootChildren
         }, true)
-        ' populate content field with root content node.
-        ' Observer(see OnMainContentLoaded in MainScene.brs) is invoked at that moment
         m.top.content = contentNode
+    else
+        print "ParseJson failed - response was not valid JSON"
     end if
 end sub
 
-function GetItemData(video as Object) as Object
+function SortItemsByTitle(items as Object) as Object
+    ' simple bubble sort by title, case-insensitive
+    n = items.Count()
+    for i = 0 to n - 2
+        for j = 0 to n - 2 - i
+            if LCase(items[j].title) > LCase(items[j + 1].title)
+                temp = items[j]
+                items[j] = items[j + 1]
+                items[j + 1] = temp
+            end if
+        end for
+    end for
+    return items
+end function
+
+function GetItemData(channel as Object) as Object
     item = {}
-    ' populate some standard content metadata fields to be displayed on the GridScreen
-    ' https://developer.roku.com/docs/developer-program/getting-started/architecture/content-metadata.md
-    if video.longDescription <> invalid
-        item.description = video.longDescription
+    item.title = channel.title
+    item.id = channel.id
+
+    ' auto-updating thumbnail capture
+    item.hdPosterURL = "https://capture.mistweather.com/" + channel.id + ".jpg"
+
+    ' resolve icon UUID to an actual image URL, falling back if missing
+    if channel.icon <> invalid
+        item.icon = "https://api.mistweather.com/api/v1.5/image/" + channel.icon + "?width=96&height=96&fit=inside"
     else
-        item.description = video.shortDescription
+        item.icon = "https://live.mistwx.com/logos/streaming_fallbackicon.png"
     end if
-    item.hdPosterURL = video.thumbnail
-    item.icon = video.icon
-    item.title = video.title
-    item.releaseDate = video.releaseDate
-    item.id = video.id
-    if video.content <> invalid
-        ' populate length of content to be displayed on the GridScreen
-        item.length = video.content.duration
-        ' populate meta-data for playback
-        item.url = video.content.videos[0].url
-        item.streamFormat = "m3u8"
+
+    ' resolve background UUID if present
+    if channel.background <> invalid
+        item.backgroundImageUrl = "https://api.mistweather.com/api/v1.5/image/" + channel.background
     end if
+
+    ' build the HLS stream URL — playlist.m3u8 handles rendition selection automatically
+    item.url = "https://watch.mistweather.com/hls/" + channel.id + "/playlist.m3u8"
+    item.streamFormat = "m3u8"
+
     return item
 end function
