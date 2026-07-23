@@ -18,7 +18,7 @@ This app is **not published on the Roku Channel Store**. It's currently distribu
 
 ## Installing Mist Streaming on Your Roku
 
-Since this isn't on the Channel Store, you'll need to install it manually. This takes about 5 minutes and only needs to be done once. Updates will also have to be installed manually.
+Since this isn't on the Channel Store, you'll need to install it manually. This takes about 5 minutes and only needs to be done once. **Updates will also have to be installed manually.**
 
 ### Step 1: Enable Developer Mode
 
