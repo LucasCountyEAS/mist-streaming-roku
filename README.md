@@ -4,13 +4,13 @@ An unofficial Roku channel for [Mist Streaming](https://live.mistwx.com/), letti
 
 This project is a rebrand and rework of the original [WeatherRanch `channels`](https://github.com/weatherranch/channels) Roku app (now defunct), rebuilt to work with Mist Streaming's API instead.
 
+<img width="1280" height="720" alt="Screenshot 2026-07-23 08-34-01" src="https://github.com/user-attachments/assets/05b833ea-5659-499a-9005-61b226aa13ba" />
+
+
 ## Features
 
 - Browse all live Mist Streaming channels, sorted alphabetically
 - Channel descriptions and live viewer counts
-- Auto-updating thumbnails
-- Fallback icons for channels without custom artwork
-- Deep link support via Roku's External Control Protocol (ECP)
 
 ## Status
 
@@ -18,7 +18,7 @@ This app is **not published on the Roku Channel Store**. It's currently distribu
 
 ## Installing Mist Streaming on Your Roku
 
-Since this isn't on the Channel Store, you'll need to install it manually. This takes about 5 minutes and only needs to be done once (until there's an update).
+Since this isn't on the Channel Store, you'll need to install it manually. This takes about 5 minutes and only needs to be done once. Updates will also have to be installed manually.
 
 ### Step 1: Enable Developer Mode
 
@@ -76,4 +76,6 @@ This is an independent, unofficial project. It is not affiliated with or endorse
 
 ## Contact
 
-Questions or issues: [lucascountyeas+mist@gmail.com](mailto:lucascountyeas+mist@gmail.com)
+Questions or issues:
+LucasCountyEAS on Discord or
+[lucascountyeas+mist@gmail.com](mailto:lucascountyeas+mist@gmail.com)
