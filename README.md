@@ -4,7 +4,7 @@ An unofficial Roku channel for [Mist Streaming](https://live.mistwx.com/), letti
 
 This project is a rebrand and rework of the original [WeatherRanch `channels`](https://github.com/weatherranch/channels) Roku app (now defunct), rebuilt to work with Mist Streaming's API instead.
 
-<img width="1280" height="720" alt="Screenshot 2026-07-23 08-34-01" src="https://github.com/user-attachments/assets/05b833ea-5659-499a-9005-61b226aa13ba" />
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/b90704ba-6a88-4567-a52e-9888ed4bec17" />
 
 
 ## Features
