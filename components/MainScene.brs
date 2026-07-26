@@ -3,15 +3,22 @@
 ' entry point of  MainScene
 ' Note that we need to import this file in MainScene.xml using relative path.
 sub Init()
-    ' set background color for scene. Applied only if backgroundUri has empty value
     m.top.backgroundColor = "0x662D91"
     m.top.backgroundUri= "pkg:/images/background.jpg"
-    m.loadingIndicator = m.top.FindNode("loadingIndicator") ' store loadingIndicator node to m
+    m.loadingIndicator = m.top.FindNode("loadingIndicator")
+
+    ' pick the right overhang logo based on actual display resolution
+    overhang = m.top.FindNode("overhang")
+    di = CreateObject("roDeviceInfo")
+    uiResolution = di.GetUIResolution()
+    if uiResolution.name = "FHD"
+        overhang.logoUri = "pkg:/images/fhd_overhang_logo.png"
+    end if
+
     InitScreenStack()
     ShowGridScreen()
-    RunContentTask() ' retrieving content
+    RunContentTask()
 
-    ' handle a deep link that arrived before content finished loading
     if m.top.launchArgs <> invalid
         OnLaunchArgsChanged()
     end if
