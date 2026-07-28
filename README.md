@@ -39,7 +39,7 @@ Since this isn't on the Channel Store, you'll need to install it manually. This 
 
 ### Step 2: Get the app file
 
-Download the latest `Mist Streaming.zip` from the [Releases](../../releases) page (or from whoever shared this repo with you). Save it to your Downloads folder.
+Download the latest `Mist Streaming.zip` from the [Releases](../../releases) page.
 
 ### Step 3: Upload it to your Roku
 
