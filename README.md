@@ -4,7 +4,7 @@ An unofficial Roku channel for [Mist Streaming](https://live.mistwx.com/), letti
 
 This project is a rebrand and rework of the original [WeatherRanch `channels`](https://github.com/weatherranch/channels) Roku app (now defunct), rebuilt to work with Mist Streaming's API instead.
 
-<img width="1280" height="720" alt="Screenshot 2026-07-23 08-34-01" src="https://github.com/user-attachments/assets/05b833ea-5659-499a-9005-61b226aa13ba" />
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/5baee5d2-956b-483d-8674-e6be1634b5b3" />
 
 
 ## Features
@@ -39,7 +39,7 @@ Since this isn't on the Channel Store, you'll need to install it manually. This 
 
 ### Step 2: Get the app file
 
-Download the latest `Mist Streaming.zip` from the [Releases](../../releases) page (or from whoever shared this repo with you). Save it to your Downloads folder.
+Download the latest `Mist Streaming.zip` from the [Releases](../../releases) page.
 
 ### Step 3: Upload it to your Roku
 
