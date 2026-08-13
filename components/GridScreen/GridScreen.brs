@@ -6,11 +6,20 @@ sub Init()
     m.rowList = m.top.FindNode("rowList")
     m.rowList.SetFocus(true)
     m.descriptionLabel = m.top.FindNode("descriptionLabel")
-    m.thumbnailImage = m.top.FindNode("thumbnailImage")
+    m.thumbnailImage = m.top.FindNode("thumbnailimage")
     m.top.ObserveField("visible", "OnVisibleChange")
     m.titleLabel = m.top.FindNode("titleLabel")
     m.viewershipLabel = m.top.FindNode("viewershipLabel")
     m.rowList.ObserveField("rowItemFocused", "OnItemFocused")
+
+    ' watch for failed image loads
+    m.thumbnailImage.ObserveField("loadStatus", "OnThumbnailLoadStatusChange")
+end sub
+
+sub OnThumbnailLoadStatusChange()
+    if m.thumbnailImage.loadStatus = "failed"
+        m.thumbnailImage.uri = "https://live.mistwx.com/logos/streaming_fallbackicon.png"
+    end if
 end sub
 
 sub OnVisibleChange()
