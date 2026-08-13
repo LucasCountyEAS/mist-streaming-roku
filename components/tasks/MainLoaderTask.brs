@@ -95,7 +95,7 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
     end if
 
     ' auto-updating thumbnail capture with shared cache-busting timestamp
-    item.hdPosterURL = "https://capture.mistweather.com/" + channel.id + ".jpg?v=" + cacheBuster
+    item.hdPosterURL = "https://capture.mistweather.com/" + channel.id + ".hq.webp?v=" + cacheBuster
 
     ' resolve icon UUID to an actual image URL, falling back if missing
     if channel.icon <> invalid
