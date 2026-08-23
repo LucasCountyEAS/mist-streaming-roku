@@ -110,7 +110,7 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
     end if
 
     ' build the HLS stream URL — playlist.m3u8 handles rendition selection automatically
-    item.url = "https://watch.mistweather.com/hls/" + channel.id + "/playlist.m3u8"
+    item.url = "https://watch.mistlive.tv/hls/" + channel.id + "/playlist.m3u8"
     item.streamFormat = "m3u8"
 
     return item
