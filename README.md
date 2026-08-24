@@ -1,22 +1,13 @@
-# Mist Streaming — Roku App
+# Mist Live - Roku Client
 
-An unofficial Roku channel for [Mist Streaming](https://live.mistwx.com/), letting viewers browse and watch live streams directly on their TV.
+An unofficial Roku client for [Mist Live](https://mistlive.tv/), letting viewers browse and watch live streams directly on their TV.
 
-This project is a rebrand and rework of the original [WeatherRanch `channels`](https://github.com/weatherranch/channels) Roku app (now defunct), rebuilt to work with Mist Streaming's API instead.
+This project is a rebrand and rework of the original [WeatherRanch channels](https://github.com/weatherranch/channels) Roku app (abandoned), rebuilt to work with Mist Live's API instead.
 
-<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/5baee5d2-956b-483d-8674-e6be1634b5b3" />
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/d222e64b-d62f-4dde-9fd2-dd56b7383b55" />
 
 
-## Features
-
-- Browse all live Mist Streaming channels, sorted alphabetically
-- Channel descriptions and live viewer counts
-
-## Status
-
-This app is **not published on the Roku Channel Store**. It's currently distributed directly to testers via manual sideloading. See below for install instructions.
-
-## Installing Mist Streaming on Your Roku
+## Installing Mist Live on Your Roku
 
 Since this isn't on the Channel Store, you'll need to install it manually. This takes about 5 minutes and only needs to be done once. **Updates will also have to be installed manually.**
 
@@ -39,7 +30,7 @@ Since this isn't on the Channel Store, you'll need to install it manually. This 
 
 ### Step 2: Get the app file
 
-Download the latest `Mist Streaming.zip` from the [Releases](../../releases) page.
+Download the latest `Mist Live.zip` from the [Releases](../../releases) page.
 
 ### Step 3: Upload it to your Roku
 
@@ -49,13 +40,13 @@ Download the latest `Mist Streaming.zip` from the [Releases](../../releases) pag
    - Username: `rokudev`
    - Password: whatever you set in Step 1
 4. You'll see an **"Application Installer"** page. Look for an **Upload** button or file picker.
-5. Select `Mist Streaming.zip` and click **Install**.
-6. Give it a few seconds — the Roku screen should switch over and launch Mist Streaming automatically.
+5. Select `Mist Live.zip` and click **Install**.
+6. Give it a few seconds — the Roku screen should switch over and launch Mist Live automatically.
 
 ### If something goes wrong
 
 - **Can't find the IP address / installer page won't load:** Double-check your computer/phone and Roku are on the same Wi-Fi network.
-- **Install fails or app crashes:** Open an issue on this repo (or contact us directly) with a description of what happened — a photo of the error helps.
+- **Install fails or app crashes:** Open an issue on this repo (or contact me directly) with a description of what happened. A photo of the error helps.
 
 ## Development
 
@@ -64,7 +55,6 @@ This app is built with the Roku SceneGraph SDK (BrightScript, XML). To work on i
 1. Clone this repo
 2. Open it in VS Code with the [BrightScript Language extension](https://marketplace.visualstudio.com/items?itemName=RokuCommunity.brightscript)
 3. Connect to a Roku device in Developer Mode (see install steps above)
-4. Press `F5` to deploy and debug directly on the device
 
 ## License
 
@@ -72,7 +62,7 @@ This project is a fork of [weatherranch/channels](https://github.com/weatherranc
 
 ## Disclaimer
 
-This is an independent, unofficial project. It is not affiliated with or endorsed by Roku, Inc. Streams and channel content are provided by Mist Streaming; this project only provides the Roku client for browsing and viewing them.
+This is an independent, unofficial project. It is not affiliated with or endorsed by Roku, Inc. Streams and channel content are provided by Mist Weather Media; this project only provides the Roku client for browsing and viewing them.
 
 ## Contact
 
