@@ -8,7 +8,6 @@ sub Init()
     m.rowList.ObserveField("rowItemFocused", "OnItemFocused")
     m.thumbnailImage.ObserveField("loadStatus", "OnThumbnailLoadStatusChange")
 
-    ' pain in the ass font
     titleFont = CreateObject("roSGNode", "Font")
     titleFont.uri = "pkg:/fonts/Geist-Bold.ttf"
     titleFont.size = 28
@@ -22,24 +21,25 @@ sub Init()
     descriptionFont.size = 20
 
     m.titleLabel = CreateObject("roSGNode", "Label")
-    m.titleLabel.translation = [810, 340]
-    m.titleLabel.width = 360
+    m.titleLabel.translation = [124, 270]
+    m.titleLabel.width = 650
     m.titleLabel.color = "0xFFFFFFFF"
     m.titleLabel.font = titleFont
     m.top.AppendChild(m.titleLabel)
 
     m.viewershipLabel = CreateObject("roSGNode", "Label")
-    m.viewershipLabel.translation = [810, 380]
-    m.viewershipLabel.width = 360
-    m.viewershipLabel.color = "0xFFFFFFFF"
+    m.viewershipLabel.translation = [1060, 268]
+    m.viewershipLabel.width = 110
+    m.viewershipLabel.color = "0xAAAAAAFF"
     m.viewershipLabel.font = viewershipFont
     m.top.AppendChild(m.viewershipLabel)
 
+    ' description stays below the thumbnail, unchanged position
     m.descriptionLabel = CreateObject("roSGNode", "Label")
-    m.descriptionLabel.translation = [810, 420]
+    m.descriptionLabel.translation = [810, 315]
     m.descriptionLabel.width = 360
     m.descriptionLabel.wrap = true
-    m.descriptionLabel.numLines = 8
+    m.descriptionLabel.numLines = 10
     m.descriptionLabel.color = "0xFFFFFFFF"
     m.descriptionLabel.font = descriptionFont
     m.top.AppendChild(m.descriptionLabel)
