@@ -136,12 +136,8 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
     ' auto-updating thumbnail capture with shared cache-busting timestamp
     item.hdPosterURL = "https://capture.mistlive.tv/" + channel.id + ".hq.webp?v=" + cacheBuster
 
-    ' resolve icon UUID to an actual image URL, falling back if missing
-    if channel.icon <> invalid
-        item.icon = "https://api.mistweather.com/api/v1.5/image/" + channel.icon + "?width=96&height=96&fit=inside"
-    else
-        item.icon = "https://file.garden/anfFhGxO-geaMQ6-/MistDefaultChannelIconWhite.png"
-    end if
+    ' resolve icon UUID to an actual image URL, checking for SVG and falling back if found or missing
+    item.icon = ResolveIconUrl(channel.icon)
 
     ' resolve background UUID if present
     if channel.background <> invalid
@@ -153,4 +149,25 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
     item.streamFormat = "m3u8"
 
     return item
+end function
+'thats a lot of end ifs
+function ResolveIconUrl(iconUuid as Dynamic) as String
+    if iconUuid = invalid then return "pkg:/images/fallback_icon.png"
+
+    url = "https://api.mistweather.com/api/v1.5/image/" + iconUuid + "?width=96&height=96&fit=inside"
+
+    xfer = CreateObject("roURLTransfer")
+    xfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
+    xfer.InitClientCertificates()
+    xfer.SetURL(url)
+    rsp = xfer.GetToString()
+
+    if rsp <> invalid and Len(rsp) > 5
+        firstChars = LCase(Left(rsp, 5))
+        if firstChars = "<?xml" or firstChars = "<svg "
+            return "pkg:/images/fallback_icon.png"
+        end if
+    end if
+
+    return url
 end function

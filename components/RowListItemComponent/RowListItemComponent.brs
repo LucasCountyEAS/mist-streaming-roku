@@ -16,6 +16,6 @@ end sub
 sub OnPosterLoadStatusChange()
     poster = m.top.FindNode("poster")
     if poster.loadStatus = "failed"
-        poster.uri = "https://live.mistwx.com/logos/streaming_fallbackicon.png"
+        poster.uri = "pkg:/images/fallback_icon.png"
     end if
 end sub

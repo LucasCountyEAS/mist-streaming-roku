@@ -12,12 +12,12 @@
     <script type="text/brightscript" uri="UILogic/VideoPlayerLogic.brs" />
     <children>
          <!-- Overhang with Roku Developers logo -->
-         <Overhang
-            id="overhang"
-            showOptions="false"
-            showClock="false"
-            logoUri="pkg:/images/hd_overhang_logo.png"
-            translation="[0,0]"
+         <Poster
+             id="logo"
+             uri="pkg:/images/hd_overhang_logo.png"
+              translation="[124,35]"
+               width="303"
+               height="53"
         />
         <Font id="loadingFont" uri="pkg:/fonts/arialbi.ttf" size="36" />
         <!-- LoadingIndicator should be visible only in case of waiting for content -->
