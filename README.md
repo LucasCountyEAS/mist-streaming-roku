@@ -67,5 +67,5 @@ This is an independent, unofficial project. It is not affiliated with or endorse
 ## Contact
 
 Questions or issues:
-LucasCountyEAS on Discord or
+[Rukasu Development Server](https://discord.gg/3KvxYqpYdF) on Discord or
 [lucascountyeas+mist@gmail.com](mailto:lucascountyeas+mist@gmail.com)
