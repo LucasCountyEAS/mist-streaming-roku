@@ -1,19 +1,48 @@
 ' ********** Copyright 2020 Roku Corp.  All Rights Reserved. **********
 
-' entry point of GridScreen
-' Note that we need to import this file in GridScreen.xml using relative path.
 sub Init()
     m.rowList = m.top.FindNode("rowList")
     m.rowList.SetFocus(true)
-    m.descriptionLabel = m.top.FindNode("descriptionLabel")
     m.thumbnailImage = m.top.FindNode("thumbnailimage")
     m.top.ObserveField("visible", "OnVisibleChange")
-    m.titleLabel = m.top.FindNode("titleLabel")
-    m.viewershipLabel = m.top.FindNode("viewershipLabel")
     m.rowList.ObserveField("rowItemFocused", "OnItemFocused")
-
-    ' watch for failed image loads
     m.thumbnailImage.ObserveField("loadStatus", "OnThumbnailLoadStatusChange")
+
+    ' pain in the ass font
+    titleFont = CreateObject("roSGNode", "Font")
+    titleFont.uri = "pkg:/fonts/Geist-Bold.ttf"
+    titleFont.size = 28
+
+    viewershipFont = CreateObject("roSGNode", "Font")
+    viewershipFont.uri = "pkg:/fonts/Geist-Bold.ttf"
+    viewershipFont.size = 20
+
+    descriptionFont = CreateObject("roSGNode", "Font")
+    descriptionFont.uri = "pkg:/fonts/Geist-Regular.ttf"
+    descriptionFont.size = 20
+
+    m.titleLabel = CreateObject("roSGNode", "Label")
+    m.titleLabel.translation = [810, 340]
+    m.titleLabel.width = 360
+    m.titleLabel.color = "0xFFFFFFFF"
+    m.titleLabel.font = titleFont
+    m.top.AppendChild(m.titleLabel)
+
+    m.viewershipLabel = CreateObject("roSGNode", "Label")
+    m.viewershipLabel.translation = [810, 380]
+    m.viewershipLabel.width = 360
+    m.viewershipLabel.color = "0xFFFFFFFF"
+    m.viewershipLabel.font = viewershipFont
+    m.top.AppendChild(m.viewershipLabel)
+
+    m.descriptionLabel = CreateObject("roSGNode", "Label")
+    m.descriptionLabel.translation = [810, 420]
+    m.descriptionLabel.width = 360
+    m.descriptionLabel.wrap = true
+    m.descriptionLabel.numLines = 8
+    m.descriptionLabel.color = "0xFFFFFFFF"
+    m.descriptionLabel.font = descriptionFont
+    m.top.AppendChild(m.descriptionLabel)
 end sub
 
 sub OnThumbnailLoadStatusChange()
@@ -51,8 +80,6 @@ sub OnItemFocused()
     end if
 end sub
 
-' this method convert seconds to mm:ss format
-' getTime(138) returns 2:18
 function GetTime(length as Integer) as String
     minutes = (length \ 60).ToStr()
     seconds = length MOD 60

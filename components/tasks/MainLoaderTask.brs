@@ -81,6 +81,45 @@ function SortItemsByTitle(items as Object) as Object
     return items
 end function
 
+' markdown stripper ilike those
+function StripMarkdown(text as String) as String
+    if text = invalid or text = "" then return ""
+
+    result = text
+
+    ' bold/italic: **text** or __text__ or *text* or _text_
+    result = result.Replace("**", "")
+    result = result.Replace("__", "")
+    result = result.Replace("*", "")
+    result = result.Replace("_", "")
+
+    ' headers: leading # symbols
+    result = result.Replace("#", "")
+
+    ' inline code / code blocks
+    result = result.Replace("`", "")
+
+    ' strikethrough
+    result = result.Replace("~~", "")
+
+    ' links: [text](url) -> just show the text
+    while result.Instr("[") > -1 and result.Instr("](") > -1
+        startBracket = result.Instr("[")
+        midBracket = result.Instr(startBracket, "](")
+        endParen = result.Instr(midBracket, ")")
+        if startBracket > -1 and midBracket > -1 and endParen > -1
+            linkText = result.Mid(startBracket + 1, midBracket - startBracket - 1)
+            before = result.Left(startBracket)
+            after = result.Mid(endParen + 1)
+            result = before + linkText + after
+        else
+            exit while
+        end if
+    end while
+
+    return result
+end function
+
 function GetItemData(channel as Object, descriptions as Object, cacheBuster as String) as Object
     item = {}
     item.title = channel.title
@@ -89,11 +128,11 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
 
     ' pull the description from the lookup map, if available
     if descriptions[channel.id] <> invalid
-        item.description = descriptions[channel.id]
+    item.description = StripMarkdown(descriptions[channel.id])
     else
-        item.description = ""
+    item.description = ""
     end if
-
+    
     ' auto-updating thumbnail capture with shared cache-busting timestamp
     item.hdPosterURL = "https://capture.mistlive.tv/" + channel.id + ".hq.webp?v=" + cacheBuster
 
@@ -101,7 +140,7 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
     if channel.icon <> invalid
         item.icon = "https://api.mistweather.com/api/v1.5/image/" + channel.icon + "?width=96&height=96&fit=inside"
     else
-        item.icon = "https://live.mistwx.com/logos/streaming_fallbackicon.png"
+        item.icon = "https://file.garden/anfFhGxO-geaMQ6-/MistDefaultChannelIconWhite.png"
     end if
 
     ' resolve background UUID if present

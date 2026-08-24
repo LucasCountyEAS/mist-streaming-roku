@@ -3,7 +3,7 @@
 ' entry point of  MainScene
 ' Note that we need to import this file in MainScene.xml using relative path.
 sub Init()
-    m.top.backgroundColor = "0x662D91"
+    'm.top.backgroundColor = "0xFF0000FF"
     m.top.backgroundUri= "pkg:/images/background.jpg"
     m.loadingIndicator = m.top.FindNode("loadingIndicator")
 
