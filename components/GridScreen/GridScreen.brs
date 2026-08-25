@@ -21,7 +21,7 @@ sub Init()
     descriptionFont.size = 20
 
     m.titleLabel = CreateObject("roSGNode", "Label")
-    m.titleLabel.translation = [124, 270]
+    m.titleLabel.translation = [128, 270]
     m.titleLabel.width = 650
     m.titleLabel.color = "0xFFFFFFFF"
     m.titleLabel.font = titleFont
