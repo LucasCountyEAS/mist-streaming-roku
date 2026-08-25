@@ -10,14 +10,14 @@ sub GetContent()
     xfer = CreateObject("roURLTransfer")
     xfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
     xfer.InitClientCertificates()
-    xfer.SetURL("https://api.mistweather.com/api/v1.5/channels")
+    xfer.SetURL("https://api.mistlive.tv/api/v1.5/channels")
     rsp = xfer.GetToString()
 
     ' request descriptions from the public-channels endpoint
     descXfer = CreateObject("roURLTransfer")
     descXfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
     descXfer.InitClientCertificates()
-    descXfer.SetURL("https://api.mistweather.com/api/public-channels")
+    descXfer.SetURL("https://api.mistlive.tv/api/public-channels")
     descRsp = descXfer.GetToString()
 
     ' build a lookup map of channel_id -> description
@@ -141,7 +141,7 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
 
     ' resolve background UUID if present
     if channel.background <> invalid
-        item.backgroundImageUrl = "https://api.mistweather.com/api/v1.5/image/" + channel.background
+        item.backgroundImageUrl = "https://api.mistlive.tv/api/v1.5/image/" + channel.background
     end if
 
     ' build the HLS stream URL — playlist.m3u8 handles rendition selection automatically
@@ -154,7 +154,7 @@ end function
 function ResolveIconUrl(iconUuid as Dynamic) as String
     if iconUuid = invalid then return "pkg:/images/fallback_icon.png"
 
-    url = "https://api.mistweather.com/api/v1.5/image/" + iconUuid + "?width=96&height=96&fit=inside"
+    url = "https://api.mistlive.tv/api/v1.5/image/" + iconUuid + "?width=256&height=256&fit=inside"
 
     xfer = CreateObject("roURLTransfer")
     xfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
