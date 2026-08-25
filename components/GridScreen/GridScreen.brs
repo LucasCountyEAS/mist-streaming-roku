@@ -47,7 +47,7 @@ end sub
 
 sub OnThumbnailLoadStatusChange()
     if m.thumbnailImage.loadStatus = "failed"
-        m.thumbnailImage.uri = "https://live.mistwx.com/logos/streaming_fallbackicon.png"
+        m.thumbnailImage.uri = "https://file.garden/anfFhGxO-geaMQ6-/thumbnailfail.png"
     end if
 end sub
 
