@@ -4,7 +4,7 @@ An unofficial Roku client for [Mist Live](https://mistlive.tv/), letting viewers
 
 This project is a rebrand and rework of the original [WeatherRanch channels](https://github.com/weatherranch/channels) Roku app (abandoned), rebuilt to work with Mist Live's API instead.
 
-<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/d222e64b-d62f-4dde-9fd2-dd56b7383b55" />
+<img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/abb5e546-a64a-4728-a2b3-854e38f1fc87" />
 
 
 ## Installing Mist Live on Your Roku
