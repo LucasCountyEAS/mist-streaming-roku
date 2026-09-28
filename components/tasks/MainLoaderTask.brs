@@ -6,65 +6,63 @@ sub Init()
 end sub
 
 sub GetContent()
-    ' request the channel list from the Mist Streaming API
-    xfer = CreateObject("roURLTransfer")
-    xfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
-    xfer.InitClientCertificates()
-    xfer.SetURL("https://api.mistlive.tv/api/v1.5/channels")
-    rsp = xfer.GetToString()
+    rsp = FetchString("https://api.mistlive.tv/api/v1.5/channels")
+    descRsp = FetchString("https://api.mistlive.tv/api/public-channels")
 
-    ' request descriptions from the public-channels endpoint
-    descXfer = CreateObject("roURLTransfer")
-    descXfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
-    descXfer.InitClientCertificates()
-    descXfer.SetURL("https://api.mistlive.tv/api/public-channels")
-    descRsp = descXfer.GetToString()
-
-    ' build a lookup map of channel_id -> description
     descriptions = {}
     descJson = ParseJson(descRsp)
-    if descJson <> invalid
+    if type(descJson) = "roArray"
         for each entry in descJson
-            if entry.channel_id <> invalid and entry.channel_description <> invalid
+            if type(entry) = "roAssociativeArray" and entry.channel_id <> invalid and entry.channel_description <> invalid
                 descriptions[entry.channel_id] = entry.channel_description
             end if
         end for
     end if
 
-    ' generate one cache-busting timestamp shared by all thumbnails this refresh
     timestamp = CreateObject("roDateTime")
     cacheBuster = timestamp.GetYear().ToStr() + timestamp.GetMonth().ToStr() + timestamp.GetDayOfMonth().ToStr() + timestamp.GetHours().ToStr() + timestamp.GetMinutes().ToStr() + timestamp.GetSeconds().ToStr()
+
     ' parse the flat channel array
     json = ParseJson(rsp)
-    if json <> invalid
-        items = []
+    items = []
+    if type(json) = "roArray"
         for each channel in json
-            ' skip channels that are currently offline
-            if channel.online = true
-                items.Push(GetItemData(channel, descriptions, cacheBuster))
+            ' skip malformed entries and channels that are currently offline
+            if type(channel) = "roAssociativeArray" and channel.id <> invalid and channel.title <> invalid
+                if channel.online = true
+                    items.Push(GetItemData(channel, descriptions, cacheBuster))
+                end if
             end if
         end for
 
-        ' sort items alphabetically by title
+        'allphabeticallyj
         items = SortItemsByTitle(items)
-
-        ' single row containing every channel, sorted alphabetically
-        row = {}
-        row.title = "All Channels"
-        row.children = items
-
-        rootChildren = [row]
-
-        ' set up a root ContentNode to represent rowList on the GridScreen
-        contentNode = CreateObject("roSGNode", "ContentNode")
-        contentNode.Update({
-            children: rootChildren
-        }, true)
-        m.top.content = contentNode
     else
-        print "ParseJson failed - response was not valid JSON"
+        print "ParseJson failed - response was not a valid JSON array"
     end if
+
+    row = {}
+    row.title = "All Channels"
+    row.children = items
+
+    ' set up a root ContentNode to represent rowList on the GridScreen
+    ' (always set, even when empty, so the loading indicator is dismissed)
+    contentNode = CreateObject("roSGNode", "ContentNode")
+    contentNode.Update({
+        children: [row]
+    }, true)
+    m.top.content = contentNode
 end sub
+
+function FetchString(url as String) as String
+    xfer = CreateObject("roURLTransfer")
+    xfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
+    xfer.InitClientCertificates()
+    xfer.SetURL(url)
+    rsp = xfer.GetToString()
+    if rsp = invalid then return ""
+    return rsp
+end function
 
 function SortItemsByTitle(items as Object) as Object
     ' simple bubble sort by title, case-insensitive
@@ -81,40 +79,33 @@ function SortItemsByTitle(items as Object) as Object
     return items
 end function
 
-' markdown stripper ilike those
-function StripMarkdown(text as String) as String
-    if text = invalid or text = "" then return ""
+' markdown stripper
+function StripMarkdown(text as Dynamic) as String
+    if text = invalid or type(text) <> "roString" and type(text) <> "String" then return ""
+    if text = "" then return ""
 
     result = text
 
-    ' bold/italic: **text** or __text__ or *text* or _text_
     result = result.Replace("**", "")
     result = result.Replace("__", "")
     result = result.Replace("*", "")
     result = result.Replace("_", "")
-
-    ' headers: leading # symbols
     result = result.Replace("#", "")
-
-    ' inline code / code blocks
     result = result.Replace("`", "")
-
-    ' strikethrough
     result = result.Replace("~~", "")
 
-    ' links: [text](url) -> just show the text
-    while result.Instr("[") > -1 and result.Instr("](") > -1
+    guard = 0
+    while result.Instr("[") > -1 and result.Instr("](") > -1 and guard < 50
+        guard = guard + 1
         startBracket = result.Instr("[")
         midBracket = result.Instr(startBracket, "](")
+        if midBracket = -1 then exit while
         endParen = result.Instr(midBracket, ")")
-        if startBracket > -1 and midBracket > -1 and endParen > -1
-            linkText = result.Mid(startBracket + 1, midBracket - startBracket - 1)
-            before = result.Left(startBracket)
-            after = result.Mid(endParen + 1)
-            result = before + linkText + after
-        else
-            exit while
-        end if
+        if endParen = -1 then exit while
+        linkText = result.Mid(startBracket + 1, midBracket - startBracket - 1)
+        before = result.Left(startBracket)
+        after = result.Mid(endParen + 1)
+        result = before + linkText + after
     end while
 
     return result
@@ -128,15 +119,12 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
 
     ' pull the description from the lookup map, if available
     if descriptions[channel.id] <> invalid
-    item.description = StripMarkdown(descriptions[channel.id])
+        item.description = StripMarkdown(descriptions[channel.id])
     else
-    item.description = ""
+        item.description = ""
     end if
-    
-    ' auto-updating thumbnail capture with shared cache-busting timestamp
-    item.hdPosterURL = "https://capture.mistlive.tv/" + channel.id + ".hq.webp?v=" + cacheBuster
 
-    ' resolve icon UUID to an actual image URL, checking for SVG and falling back if found or missing
+    item.hdPosterURL = "https://capture.mistlive.tv/" + channel.id + ".hq.webp?v=" + cacheBuster
     item.icon = ResolveIconUrl(channel.icon)
 
     ' resolve background UUID if present
@@ -144,25 +132,21 @@ function GetItemData(channel as Object, descriptions as Object, cacheBuster as S
         item.backgroundImageUrl = "https://api.mistlive.tv/api/v1.5/image/" + channel.background
     end if
 
-    ' build the HLS stream URL — playlist.m3u8 handles rendition selection automatically
+    ' build the HLS stream URL - playlist.m3u8 handles rendition selection automatically
     item.url = "https://watch.mistlive.tv/hls/" + channel.id + "/playlist.m3u8"
     item.streamFormat = "m3u8"
 
     return item
 end function
-'thats a lot of end ifs
+
 function ResolveIconUrl(iconUuid as Dynamic) as String
     if iconUuid = invalid then return "pkg:/images/fallback_icon.png"
 
     url = "https://api.mistlive.tv/api/v1.5/image/" + iconUuid + "?width=256&height=256&fit=inside"
 
-    xfer = CreateObject("roURLTransfer")
-    xfer.SetCertificatesFile("common:/certs/ca-bundle.crt")
-    xfer.InitClientCertificates()
-    xfer.SetURL(url)
-    rsp = xfer.GetToString()
+    rsp = FetchString(url)
 
-    if rsp <> invalid and Len(rsp) > 5
+    if Len(rsp) > 5
         firstChars = LCase(Left(rsp, 5))
         if firstChars = "<?xml" or firstChars = "<svg "
             return "pkg:/images/fallback_icon.png"

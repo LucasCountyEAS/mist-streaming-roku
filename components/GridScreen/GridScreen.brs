@@ -58,25 +58,26 @@ sub OnVisibleChange()
 end sub
 
 sub OnItemFocused()
+    if m.rowList.content = invalid then return
     focusedIndex = m.rowList.rowItemFocused
+    if focusedIndex = invalid or focusedIndex.Count() < 2 then return
     row = m.rowList.content.GetChild(focusedIndex[0])
+    if row = invalid then return
     item = row.GetChild(focusedIndex[1])
+    if item = invalid then return
 
     m.descriptionLabel.text = item.description
     m.titleLabel.text = item.title
+    m.thumbnailImage.uri = item.hdPosterUrl
 
     if item.viewership <> invalid
         if item.viewership = 1
-            m.viewershipLabel.text = item.viewership.ToStr() + " viewer"
+            m.viewershipLabel.text = "1 viewer"
         else
             m.viewershipLabel.text = item.viewership.ToStr() + " viewers"
         end if
     else
         m.viewershipLabel.text = ""
-    end if
-
-    if item <> invalid 
-        m.thumbnailImage.uri = item.hdPosterUrl
     end if
 end sub
 

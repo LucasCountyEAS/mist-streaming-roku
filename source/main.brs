@@ -17,19 +17,15 @@ sub ShowChannelRSGScreen(args as Dynamic)
     ' roInput object is required to receive roInputEvent (deep-link/ECP) events
     input = CreateObject("roInput")
     input.SetMessagePort(m.port)
-
-    ' every screen object must have a Scene node, or a node that derives from the Scene node
     scene = screen.CreateScene("MainScene")
+    screen.Show() ' Init method in MainScene.brs is invoked
     scene.signalBeacon("AppLaunchComplete")
 
-    ' handle deep-link / input launch parameters (required for supports_input_launch)
     if args <> invalid
         if args.contentId <> invalid or args.mediaType <> invalid
             scene.launchArgs = args
         end if
     end if
-
-    screen.Show() ' Init method in MainScene.brs is invoked
 
     ' event loop
     while(true)
@@ -39,7 +35,6 @@ sub ShowChannelRSGScreen(args as Dynamic)
         if msgType = "roSGScreenEvent"
             if msg.IsScreenClosed() then return
         else if msgType = "roInputEvent"
-            ' handle deep-link events that arrive while the app is already running
             if msg.IsInput()
                 info = msg.GetInfo()
                 if info <> invalid and info.contentId <> invalid
